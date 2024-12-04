@@ -1,0 +1,9 @@
+[package]
+name = "AdventOfRust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+const_format = "0.2.33"
+ndarray = "0.16.1"
+regex = "1.11.1"
