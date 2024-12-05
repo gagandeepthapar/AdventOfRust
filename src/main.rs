@@ -1,4 +1,5 @@
 use utils::{AOCChallenge, AOCResult};
+pub mod aoc_utils;
 pub mod r2023;
 pub mod r2024;
 pub mod utils;
