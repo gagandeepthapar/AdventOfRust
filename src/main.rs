@@ -1,13 +1,14 @@
 use utils::{AOCChallenge, AOCResult};
 pub mod aoc_utils;
+pub mod r2022;
 pub mod r2023;
 pub mod r2024;
 pub mod utils;
 
 // INPUTS
 const YEAR: &str = "2024";
-const DAY: &str = "04";
-pub use r2024::day04 as today;
+const DAY: &str = "05";
+pub use r2024::day05 as today;
 
 // FILES
 const TEST1_FILE: &str = const_format::concatcp!("TESTS/", YEAR, "/day", DAY, "/part_1.txt");

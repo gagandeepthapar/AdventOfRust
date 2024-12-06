@@ -1,4 +1,3 @@
-use std::array;
 use std::cmp::{max, min};
 use std::{io::BufRead, usize};
 
