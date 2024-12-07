@@ -2,33 +2,6 @@
 use crate::utils::{AOCError, AOCResult};
 use std::{io::BufRead, usize};
 
-fn get_primes(num: usize) -> Vec<usize> {
-    let mut factors: Vec<usize> = Vec::new();
-    let mut num = num;
-
-    // get all 2s
-    while num % 2 == 0 {
-        factors.push(2);
-        num = num / 2;
-    }
-    // num = num * 2;
-
-    // get all primes (starts above 3)
-    let nsqrt = ((num as f64).sqrt()) as usize;
-    (3..=nsqrt).for_each(|divisor| {
-        while num % divisor == 0 {
-            factors.push(divisor);
-            num = num / divisor;
-        }
-    });
-
-    if num > 2 {
-        factors.push(num);
-    }
-
-    factors
-}
-
 fn num_in_base(num: usize, base: usize) -> String {
     let mut rev_string: String = String::new();
     let (mut quot, mut rem) = (num, 0);
