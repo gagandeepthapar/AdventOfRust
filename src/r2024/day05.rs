@@ -1,8 +1,5 @@
 // REQUIRED
-use crate::{
-    aoc_utils::reader2vecs,
-    utils::{AOCError, AOCResult},
-};
+use crate::utils::AOCResult;
 use std::{
     collections::{HashMap, HashSet},
     io::BufRead,

@@ -119,6 +119,7 @@ pub fn wordsearch(
     let max_row = puzzle.len() - 1;
     let max_col = puzzle[0].len() - 1;
     let wordlen = word.len();
+    let (mut newstep, mut valid_step) = ((0, 0), true);
     let wordchars = word.chars().collect::<Vec<char>>();
 
     puzzle.iter().enumerate().for_each(|(rowidx, row)| {
@@ -126,7 +127,7 @@ pub fn wordsearch(
             if ch == wordchars[0] {
                 for step in valid_dir {
                     let mut valid_match = true;
-                    let (mut newstep, mut valid_step) = ((rowidx, colidx), true);
+                    (newstep, valid_step) = ((rowidx, colidx), true);
                     for wordidx in 1..wordlen {
                         if valid_match {
                             (newstep, valid_step) = step.travel(newstep, (max_row, max_col));
