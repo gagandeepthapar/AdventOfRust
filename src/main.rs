@@ -7,8 +7,8 @@ pub mod utils;
 
 // INPUTS
 const YEAR: &str = "2024";
-const DAY: &str = "05";
-pub use r2024::day05 as today;
+const DAY: &str = "07";
+pub use r2024::day07 as today;
 
 // FILES
 const TEST1_FILE: &str = const_format::concatcp!("TESTS/", YEAR, "/day", DAY, "/part_1.txt");

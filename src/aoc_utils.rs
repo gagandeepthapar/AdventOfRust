@@ -1,7 +1,7 @@
 use std::cmp::{max, min};
 use std::{io::BufRead, usize};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum DIRECTION {
     NORTH,
     NORTHEAST,
