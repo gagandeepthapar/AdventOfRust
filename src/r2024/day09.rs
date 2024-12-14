@@ -1,5 +1,5 @@
 // REQUIRED
-use crate::utils::{AOCError, AOCResult};
+use crate::utils::AOCResult;
 use std::{io::BufRead, usize};
 
 fn get_taken_free<R: BufRead>(

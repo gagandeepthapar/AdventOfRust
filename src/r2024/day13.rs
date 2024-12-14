@@ -37,11 +37,11 @@ fn reader_to_arcade<R: BufRead>(reader: R) -> Vec<[(i64, i64); 3]> {
     arcade_vec
 }
 
-fn solveaxequalsb(A: &[i64; 4], B: &[i64; 2]) -> ([i64; 2], bool) {
+fn solveaxequalsb(a_mat: &[i64; 4], b_vec: &[i64; 2]) -> ([i64; 2], bool) {
     // 2x2 integer linear system of equations
     let mut def = ([0 as i64; 2], false);
-    let [a, b, c, d] = A;
-    let [e, f] = B;
+    let [a, b, c, d] = a_mat;
+    let [e, f] = b_vec;
 
     // Compute determinant for inverse
     let det = a * d - b * c;
