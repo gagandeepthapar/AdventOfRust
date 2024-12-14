@@ -89,6 +89,31 @@ impl DIRECTION {
         // FALSE -> INVALID STEP
         ((nrow, ncol), !(rb | cb))
     }
+
+    pub fn delta_coord_to_dirs(delta_coord: (i64, i64)) -> Vec<DIRECTION> {
+        let vert_trav = match delta_coord.0.signum() {
+            -1 => Some(Self::NORTH),
+            0 => None,
+            1 => Some(Self::SOUTH),
+            _ => panic!("NON-UNIT"),
+        };
+        let horiz_trav = match delta_coord.1.signum() {
+            -1 => Some(Self::WEST),
+            0 => None,
+            1 => Some(Self::EAST),
+            _ => panic!("NON-UNIT"),
+        };
+
+        let mut vert_trav: Vec<DIRECTION> =
+            (0..delta_coord.0.abs()).filter_map(|_| vert_trav).collect();
+
+        let mut horiz_trav: Vec<DIRECTION> = (0..delta_coord.1.abs())
+            .filter_map(|_| horiz_trav)
+            .collect();
+
+        vert_trav.append(&mut horiz_trav);
+        vert_trav
+    }
 }
 
 pub fn reader2vecs<R: BufRead>(reader: R) -> Vec<Vec<char>> {
