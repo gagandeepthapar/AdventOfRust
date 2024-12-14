@@ -102,12 +102,27 @@ pub fn reader2vecs<R: BufRead>(reader: R) -> Vec<Vec<char>> {
 
     puzzle
 }
+
+pub fn reader2numvecs<R: BufRead>(reader: R) -> Vec<Vec<usize>> {
+    let puzzle: Vec<Vec<usize>> = reader
+        .lines()
+        .map(|line_result| {
+            let line_result = line_result.unwrap();
+            line_result
+                .chars()
+                .map(|ch| ch.to_digit(10).unwrap() as usize)
+                .collect::<Vec<usize>>()
+        })
+        .collect();
+    puzzle
+}
+
 pub fn sat(val: usize, lims: (usize, usize)) -> (usize, bool) {
     let nval = min(max(val, lims.0), lims.1);
 
     // TRUE -> SATURATED
     // FALSE -> ORIGINAL
-    (nval, nval != val)
+    (nval, (val < lims.0) || (lims.1 < val))
 }
 
 pub fn wordsearch(
