@@ -9,8 +9,8 @@ use std::time::{Duration, Instant};
 use std::{env, fs};
 
 // CONSTS
-const TEST_LOC: &str = "TESTS/";
-const INPT_LOC: &str = "INPUTS/";
+pub const TEST_LOC: &str = "TESTS/";
+pub const INPT_LOC: &str = "INPUTS/";
 
 const PART1: &str = "part_1.txt";
 const PART2: &str = "part_2.txt";
