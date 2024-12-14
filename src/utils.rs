@@ -123,7 +123,7 @@ pub struct AOCArgs {
     #[arg(short = 'y', long)]
     year: Option<usize>,
 
-    /// Relevant Year for Advent of Code. Defaults to current year.
+    /// Relevant Year for Advent of Code. Defaults to current 1.
     #[arg(short = 'd', long)]
     day: Option<usize>,
 
@@ -145,10 +145,6 @@ impl AOCArgs {
 
         // Welcome Splash
         println!("\n>>>>>> Advent of Code {} - Day {} <<<<<<", _yr, _day);
-
-        // Unpack args
-        // let create_flag = self.create.unwrap_or(false);
-        // let run_flag = self.run.unwrap_or(true);
 
         // Process Args
         if self.create {
