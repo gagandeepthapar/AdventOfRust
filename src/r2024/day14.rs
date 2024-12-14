@@ -1,10 +1,10 @@
 // REQUIRED
-use crate::utils::{AOCError, AOCResult};
+use crate::utils::AOCResult;
 use std::{io::BufRead, usize};
 
 // OPTIONAL
 use const_format::concatcp;
-use image::{ImageBuffer, Luma, RgbImage};
+use image::{ImageBuffer, RgbImage};
 use regex::Regex;
 
 const GRID_WIDTH: i64 = 101;
