@@ -1,24 +1,21 @@
 // REQUIRED
-use crate::{
-    aoc_utils::sat,
-    utils::{AOCError, AOCResult},
-};
-use std::{env::consts::ARCH, io::BufRead, usize};
+use crate::utils::AOCResult;
+use std::{io::BufRead, usize};
 
 // OPTIONAL
-use crate::aoc_utils::reader2vecs;
+use crate::aoc_utils::{reader2vecs, DIRECTION};
 use std::collections::{HashMap, HashSet};
 
-fn get_freq_loc(puzzle: Vec<Vec<char>>) -> HashMap<char, HashSet<(usize, usize)>> {
-    let mut antenna_loc: HashMap<char, HashSet<(usize, usize)>> = HashMap::new();
+fn get_freq_loc(puzzle: Vec<Vec<char>>) -> HashMap<char, Vec<(usize, usize)>> {
+    let mut antenna_loc: HashMap<char, Vec<(usize, usize)>> = HashMap::new();
 
     puzzle.iter().enumerate().for_each(|(rowidx, row)| {
         row.iter().enumerate().for_each(|(colidx, ch)| {
             if *ch != '.' {
                 antenna_loc
                     .entry(*ch)
-                    .or_insert_with(HashSet::new)
-                    .insert((rowidx, colidx));
+                    .or_insert_with(Vec::new)
+                    .insert(0, (rowidx, colidx));
             }
         });
     });
@@ -31,33 +28,78 @@ pub fn part1<R: BufRead>(reader: R) -> AOCResult<usize> {
     let max_row = puzzle.len() - 1;
     let max_col = puzzle[0].len() - 1;
     let antenna_loc = get_freq_loc(puzzle);
-    println!("{:?}", antenna_loc);
-
-    let (mut newnode, nodeflag) = ((0, 0), true);
-    let antinode_list: HashSet<(usize, usize)> = HashSet::new();
-    antenna_loc.keys().map(|key| {
-        let vals = antenna_loc.get(&key).unwrap();
-        vals.iter().for_each(|val1| {
-            vals.iter().for_each(|val2| {
-                if (val1.0 != val2.0) && (val1.1 != val2.1) {
-                    let dr = val2.0 - val1.0;
-                    let dc = val2.1 - val1.1;
-
-                    let (nndode1_r,_) = sat(val2.0 + dr, (0, max_row));
-                    let nndode1_c = sat(val2.1 + dc, (0, max_col));
-                    let nndode2_r = sat(val1.0 - dr, (0, max_row));
-                    let nndode2_c = sat(val1.1 - dc, (0, max_col));
-
-                    antinode_list.insert((nnode1_r, nnode1_c));
-                    antinode_list.insert((nnode2_r, nnode2_c));
+    let mut antinodes: HashSet<(usize, usize)> = HashSet::new();
+    antenna_loc.iter().for_each(|(_, v)| {
+        for ii in 0..v.len() {
+            for jj in 0..v.len() {
+                // Skip same antennas
+                if ii == jj {
+                    continue;
                 }
-            });
-        })
+
+                // Compute path to antenna
+                let dx = v[jj].0 as i64 - v[ii].0 as i64;
+                let dy = v[jj].1 as i64 - v[ii].1 as i64;
+                let path = DIRECTION::delta_coord_to_dirs((dx, dy));
+
+                // Travel down path to antinode position
+                let mut start = v[jj];
+                let mut v_step: bool = true;
+                let valid_antinode = path.iter().fold(true, |valid_path, dir| {
+                    (start, v_step) = dir.travel(start, (max_row, max_col));
+                    valid_path && v_step
+                });
+
+                // Insert if valid path taken
+                if valid_antinode {
+                    antinodes.insert(start);
+                }
+            }
+        }
     });
 
-    Err(AOCError)
+    Ok(antinodes.len())
 }
 
-pub fn part2<R: BufRead>(_reader: R) -> AOCResult<usize> {
-    Err(AOCError)
+pub fn part2<R: BufRead>(reader: R) -> AOCResult<usize> {
+    let puzzle = reader2vecs(reader);
+    let max_row = puzzle.len() - 1;
+    let max_col = puzzle[0].len() - 1;
+    let antenna_loc = get_freq_loc(puzzle);
+    let mut antinodes: HashSet<(usize, usize)> = HashSet::new();
+    antenna_loc.iter().for_each(|(_, v)| {
+        for ii in 0..v.len() {
+            for jj in 0..v.len() {
+                // Skip same antennas
+                if ii == jj {
+                    continue;
+                }
+
+                // Compute path to antenna
+                let dx = v[jj].0 as i64 - v[ii].0 as i64;
+                let dy = v[jj].1 as i64 - v[ii].1 as i64;
+                let path = DIRECTION::delta_coord_to_dirs((dx, dy));
+
+                // Travel down path to antinode position
+                let mut start = v[jj];
+                antinodes.insert(start);
+
+                let mut v_step: bool = true;
+                let mut valid_antinode = true;
+                while valid_antinode {
+                    valid_antinode = path.iter().fold(true, |valid_path, dir| {
+                        (start, v_step) = dir.travel(start, (max_row, max_col));
+                        valid_path && v_step
+                    });
+
+                    // Insert if valid path taken
+                    if valid_antinode {
+                        antinodes.insert(start);
+                    }
+                }
+            }
+        }
+    });
+
+    Ok(antinodes.len())
 }
