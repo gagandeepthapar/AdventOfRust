@@ -119,6 +119,14 @@ impl AOCChallenge {
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct AOCArgs {
+    /// Run specified Advent of Code Snippet. Default true.
+    #[arg(long,action=ArgAction::SetTrue)]
+    run: bool,
+
+    /// Create specfied Advent of Code Snippet. Default false.
+    #[arg(long,action=ArgAction::SetTrue)]
+    create: bool,
+
     /// Relevant Year for Advent of Code. Defaults to current year.
     #[arg(short = 'y', long)]
     year: Option<usize>,
@@ -126,14 +134,6 @@ pub struct AOCArgs {
     /// Relevant Year for Advent of Code. Defaults to current 1.
     #[arg(short = 'd', long)]
     day: Option<usize>,
-
-    /// Create specfied Advent of Code Snippet
-    #[arg(long,action=ArgAction::SetTrue)]
-    create: bool,
-
-    /// Run specified Advent of Code Snippet
-    #[arg(long,action=ArgAction::SetTrue)]
-    run: bool,
 }
 
 impl AOCArgs {
