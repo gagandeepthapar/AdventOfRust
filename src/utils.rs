@@ -2,8 +2,8 @@ use crate::today;
 use chrono::Datelike;
 use clap::{ArgAction, Parser};
 use core::fmt;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs::{File, OpenOptions};
+use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 use std::{env, fs};
@@ -192,15 +192,31 @@ impl AOCArgs {
         });
 
         // Create new rs file
-        let code_path = pwd
-            .join("src")
-            .join(format!("r{}", year))
-            .join(format!("day{:02}.rs", day));
+        let code_path = pwd.join("src").join(format!("r{}", year));
+        if !code_path.exists() {
+            fs::create_dir_all(&code_path).unwrap();
+        }
+
+        // Update mod.rs file
+        let mod_path = code_path.join("mod.rs");
+
+        // Create if doesn't exist
+        if !mod_path.exists() {
+            fs::File::create(&mod_path).unwrap();
+        }
+        let code_path = code_path.join(format!("day{:02}.rs", day));
 
         // Copy template data to new file
         if !code_path.exists() {
             fs::File::create(&code_path).unwrap();
             fs::copy(pwd.join(TEMPLATE), code_path).unwrap();
+
+            // Append new file to mod.rs file
+            let mut mod_file = OpenOptions::new().append(true).open(mod_path).unwrap();
+            let newline = format!("pub mod day{:02};", day);
+            if let Err(e) = writeln!(mod_file, "{}", newline) {
+                eprintln!("Couldn't write to modrs file: {}", e);
+            }
         }
 
         Ok(())
