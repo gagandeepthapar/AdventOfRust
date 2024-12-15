@@ -106,10 +106,11 @@ impl AOCChallenge {
 
     fn disp_sol(day: &str, part: &str, sol: usize, time: Duration) {
         println!(
-            ">>> Day {} Part {} Solution ({} us):\n{}\n",
+            ">>> Day {} Part {} Solution ({:04}.{:03} ms):\n{}\n",
             day,
             part,
-            time.as_micros(),
+            time.as_micros() / 1000,
+            time.as_micros() % 1000,
             sol,
         );
     }
