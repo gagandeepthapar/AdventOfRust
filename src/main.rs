@@ -7,7 +7,7 @@ pub mod r2024;
 pub mod utils;
 
 // INPUTS
-pub use r2024::day14 as today;
+pub use r2024::day11 as today;
 
 fn main() -> AOCResult<()> {
     // Parse Arguments
