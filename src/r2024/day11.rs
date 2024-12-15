@@ -1,5 +1,5 @@
 // REQUIRED
-use crate::utils::{AOCError, AOCResult};
+use crate::utils::AOCResult;
 use std::{collections::HashMap, io::BufRead, u128};
 
 const BLINK_P1: u128 = 25;
