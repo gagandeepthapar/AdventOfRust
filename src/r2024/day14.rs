@@ -67,28 +67,50 @@ pub fn part1<R: BufRead>(reader: R) -> AOCResult<usize> {
 
 pub fn part2<R: BufRead>(reader: R) -> AOCResult<usize> {
     let robots = reader_to_state(reader);
-    let christmas_time = 6493;
+
+    // Image will appear when std of position is low
+    let mut run_mean: (f64, f64);
+    let mut run_var: (f64, f64);
+    let mut min_std = (f64::MAX, f64::MAX);
+    let mut christmas_time = 0;
+
+    // Upper bound will be GRIDWIDTH * GRIDHEIGHT
+    for ii in (1..(GRID_WIDTH * GRID_HEIGHT)) {
+        run_mean = (0., 0.);
+        run_var = (0., 0.);
+        robots.iter().enumerate().for_each(|(idx, robot)| {
+            let xf = robot[0].0 + robot[1].0 * ii;
+            let xf = (xf % GRID_WIDTH) + (GRID_WIDTH * (xf % GRID_WIDTH < 0) as i64);
+            let yf = robot[0].1 + robot[1].1 * ii;
+            let yf = (yf % GRID_HEIGHT) + (GRID_HEIGHT * (yf % GRID_HEIGHT < 0) as i64);
+
+            // Update running mean and std
+            if idx > 0 {
+                let temp_mean = run_mean;
+                run_mean.0 = run_mean.0 + (xf as f64 - run_mean.0) / idx as f64;
+                run_mean.1 = run_mean.1 + (yf as f64 - run_mean.1) / idx as f64;
+                if idx > 1 {
+                    run_var.0 = run_var.0 + (xf as f64 - temp_mean.0) * (xf as f64 - run_mean.0);
+                    run_var.1 = run_var.1 + (yf as f64 - temp_mean.1) * (yf as f64 - run_mean.1);
+                }
+            }
+        });
+
+        let curr_std = (
+            (run_var.0 / robots.len() as f64).sqrt(),
+            (run_var.1 / robots.len() as f64).sqrt(),
+        );
+
+        // Compare RSS of STDs
+        if (curr_std.0.powi(2) + curr_std.1.powi(2)) < (min_std.0.powi(2) + min_std.1.powi(2)) {
+            min_std = curr_std;
+            christmas_time = ii;
+        }
+    }
+
     let img_dir = std::env::current_dir()
         .unwrap()
         .join(concatcp!(crate::utils::INPT_LOC, "2024/day14imgs/"));
-
-    // let t_start = 6000;
-    // let t_max = t_start + 1000;
-
-    // for ii in t_start..=t_max {
-    //     let mut img: RgbImage = ImageBuffer::new(GRID_WIDTH as u32, GRID_HEIGHT as u32);
-
-    //     robots.iter().for_each(|robot| {
-    //         let xf = robot[0].0 + robot[1].0 * ii;
-    //         let xf = (xf % GRID_WIDTH) + (GRID_WIDTH * (xf % GRID_WIDTH < 0) as i64);
-    //         let yf = robot[0].1 + robot[1].1 * ii;
-    //         let yf = (yf % GRID_HEIGHT) + (GRID_HEIGHT * (yf % GRID_HEIGHT < 0) as i64);
-
-    //         img.put_pixel(xf as u32, yf as u32, image::Rgb([255, 255, 255]));
-    //     });
-
-    //     img.save(img_dir.join(format!("{}_time.png", ii))).unwrap();
-    // }
 
     let mut img: RgbImage = ImageBuffer::new(GRID_WIDTH as u32, GRID_HEIGHT as u32);
 
